@@ -27,6 +27,7 @@ sed -i 's/^SOCKSPort 9050/SOCKSPort 9055' ${PREFIX}/etc/tor/torrc
 # Start tor as a termux-service
 # sv-enable tor
 sv-enable tor
+sleep 7    # sleep to give time to tor
 
 # pull the monero binaries
 # 
@@ -37,6 +38,7 @@ torsocks -P 9055 wget ${xmr_dl_onion}
 
 # unpack the binaries into proper place
 #
+#tar xjvf
 
 # create the config file for the monero daemon
 #
