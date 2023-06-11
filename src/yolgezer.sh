@@ -22,7 +22,7 @@ pkg upgrade -y -o Dpkg::Options::=--force-confnew && pkg install jq p7zip termux
 # Setup the torrc file
 #    change the SOCKSPort to 9055
 #    to prevent conflict with orbot
-if [ ! grep -q '^SOCKSPort 9055' ${PREFIX}/etc/tor/torrc ]; then
+if ! grep -q '^SOCKSPort 9055' "${PREFIX}/etc/tor/torrc"; then
   echo "SOCKSPort 9055" >> ${PREFIX}/etc/tor/torrc
 
 fi
