@@ -50,8 +50,12 @@ mkdir -p ${xmr_binary_dir}
 sed -i 's/^socks4.*127.0.0.1 9050$/socks5 127.0.0.1 9055/' ${PREFIX}/etc/proxychains.conf
 proxychains4 -q wget -q --show-progress -O "${xmr_binary_dir}/android_monero_binaries" "${xmr_dl_onion}"
 
-7z x "${xmr_binary_dir}/android_monero_binaries" -so | 7z x -aoa -si -ttar -spe -o"${xmr_binary_dir}"
-chmod +x ${xmr_binary_dir}/monero*
+#7z x "${xmr_binary_dir}/android_monero_binaries" -so | 7z x -aoa -si -ttar -o"${xmr_binary_dir}"
+#chmod +x ${xmr_binary_dir}/monero*
+7z x "${xmr_binary_dir}/android_monero_binaries" -so | (
+  mv android_monero_binaries/* ${xmr_binary_dir}/
+) && 7z x -aoa -si -ttar -o"${xmr_binary_dir}"
+
 
 # create the config file for the monero daemon
 #
