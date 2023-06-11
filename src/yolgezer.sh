@@ -17,7 +17,7 @@ xmr_dl_onion_32bit="http://dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmi
 # define working states
 
 # install required packages
-pkg upgrade -y -o Dpkg::Options::=--force-confnew && pkg install jq termux-api termux-services tor torsocks vim wget -y && pkg autoclean
+pkg upgrade -y -o Dpkg::Options::=--force-confnew && pkg install jq p7zip termux-api termux-services tor torsocks vim wget -y && pkg autoclean
 
 # Setup the torrc file
 #    change the SOCKSPort to 9055
@@ -34,11 +34,8 @@ sleep 7    # sleep to give time to tor
 # use torsocks -P 9055
 mkdir -p ${xmr_binary_dir}
 cd ${xmr_binary_dir}
-torsocks -P 9055 wget ${xmr_dl_onion}
+torsocks -P 9055 wget ${xmr_dl_onion} | 7z x -si -so | 7z x -aoa -si -ttar -o"."
 
-# unpack the binaries into proper place
-#
-#tar xjvf
 
 # create the config file for the monero daemon
 #
