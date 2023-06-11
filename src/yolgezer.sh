@@ -51,7 +51,7 @@ sed -i 's/^socks4.*127.0.0.1 9050$/socks5 127.0.0.1 9055/' ${PREFIX}/etc/proxych
 proxychains4 -q wget -q --show-progress -O "${xmr_binary_dir}/android_monero_binaries" "${xmr_dl_onion}"
 
 7z x "${xmr_binary_dir}/android_monero_binaries" -so | 7z x -aoa -si -ttar -o"${xmr_binary_dir}"
-#chmod +x monero-*/monero*
+chmod +x ${xmr_binary_dir}/monero*
 
 # create the config file for the monero daemon
 #
