@@ -129,7 +129,7 @@ exec "\${svlogger}" "\$@"
 EOF
 
 # create symlink to the $SVDIR
-ln -s ${xmr_runit_dir} ${SVDIR}/
+ln -sf ${xmr_runit_dir} ${SVDIR}/
 
 # TODO: later we should create a runit service for running the monerod
 #
