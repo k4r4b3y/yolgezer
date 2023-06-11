@@ -48,9 +48,8 @@ cd ${xmr_binary_dir}
 
 # use proxychains4
 # setup its proper socks port
-echo "[ProxyList]
-socks5 127.0.0.1 9055" >> ${HOME}/.config/proxychains.conf
-proxychains4 -f ${HOME}/.config/proxychains.conf wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}"
+sed -i 's/^socks4.*127.0.0.1 9050/socks5 127.0.0.1 9055/' ${PREFIX}/etc/proxychains.conf
+proxychains4 wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}"
 
 7z x "android_monero_binaries" -so | 7z x -aoa -si -ttar
 chmod +x monero-*/monero*
