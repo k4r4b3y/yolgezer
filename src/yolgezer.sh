@@ -17,7 +17,7 @@ xmr_dl_onion_64bit="http://dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmi
 # define working states
 
 # install required packages
-pkg upgrade -y -o Dpkg::Options::=--force-confnew && pkg install jq p7zip termux-api termux-services tor torsocks vim wget -y && pkg autoclean
+pkg upgrade -y -o Dpkg::Options::=--force-confnew && pkg install jq p7zip proxychains-ng termux-api termux-services tor torsocks vim wget -y && pkg autoclean
 
 # Setup the torrc file
 #    change the SOCKSPort to 9055
@@ -43,11 +43,15 @@ case $(uname -m) in
 esac
 
 # pull the monero binaries
-# 
-# use torsocks -P 9055
 mkdir -p ${xmr_binary_dir}
 cd ${xmr_binary_dir}
-proxychains4 wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}"
+
+# use proxychains4
+# setup its proper socks port
+echo "[ProxyList]
+socks5 127.0.0.1 9055" >> ${HOME}/.config/proxychains.conf
+proxychains4 -f ${HOME}/.config/proxychains.conf wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}"
+
 7z x "android_monero_binaries" -so | 7z x -aoa -si -ttar
 chmod +x monero-*/monero*
 
