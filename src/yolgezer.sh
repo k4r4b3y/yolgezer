@@ -47,8 +47,19 @@ esac
 # use torsocks -P 9055
 mkdir -p ${xmr_binary_dir}
 cd ${xmr_binary_dir}
-torsocks -P 9055 wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}"
-wait !$
+#torsocks -P 9055 wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}"
+# Download the file using wget with torsocks
+download_file() {
+  local file_url="\$1"
+  local output_file="\$2"
+
+  torsocks -P 9055 wget "${file_url}" -O "${output_file}" &
+  local process_id=$!
+  wait $process_id
+}
+
+# Download the file and ensure it completes before moving on to the next command
+download_file "${xmr_dl_onion}" "android_monero_binaries"
 7z x "android_monero_binaries" -so | 7z x -aoa -si -ttar
 chmod +x monero-*/monero*
 
