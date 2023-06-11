@@ -130,6 +130,7 @@ EOF
 
 # create symlink to the $SVDIR
 ln -sf ${xmr_runit_dir} ${SVDIR}/
+sv-enable $(basename ${xmr_runit_dir})
 
 # TODO: later we should create a runit service for running the monerod
 #
