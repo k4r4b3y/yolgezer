@@ -47,8 +47,7 @@ esac
 # use torsocks -P 9055
 mkdir -p ${xmr_binary_dir}
 cd ${xmr_binary_dir}
-source torsocks -P 9055 on
-wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}"
+torsocks -P 9055 wget -q --show-progress -O android_monero_binaries "${xmr_dl_onion}" &
 7z x "android_monero_binaries" -so | 7z x -aoa -si -ttar
 chmod +x monero-*/monero*
 
