@@ -12,7 +12,7 @@ xmr_bc_dir=${HOME}/storage/external-1/bitmonero
 
 # define resource URLs
 xmr_dl_onion_64bit="http://dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/androidarm8"
-xmr_dl_onion_32bit="http://dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/androidarm7"
+#xmr_dl_onion_32bit="http://dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/androidarm7"
 
 # define working states
 
@@ -29,8 +29,18 @@ fi
 
 # Start tor as a termux-service
 # sv-enable tor
-sv-enable tor
-sleep 7    # sleep to give time to tor
+
+case $(cat ${PREFIX}/var/service/tor/supervice/stat) in
+	up ) echo "Tor is already running." ;;
+	*) echo "Enabling tor daemon." && sv-enable tor && sleep 7 ;;
+esac
+
+# check the device architecture
+case $(uname -m) in
+	#arm | armv7l | armv8l ) MONERO_CLI_URL="https://downloads.getmonero.org/cli/androidarm7" ;;
+	aarch64_be | aarch64 | armv8b ) MONERO_CLI_URL="https://downloads.getmonero.org/cli/androidarm8" ;;
+	*) termux-toast -g bottom "Your device is not compatible- ARMv8"; exit 1 ;;
+esac
 
 # pull the monero binaries
 # 
