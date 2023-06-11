@@ -52,6 +52,7 @@ proxychains4 -q wget -q --show-progress -O "${xmr_binary_dir}/android_monero_bin
 
 7z x "${xmr_binary_dir}/android_monero_binaries" -so | 7z x -aoa -si -ttar -o"${xmr_binary_dir}"
 mv ${xmr_binary_dir}/monero-*/* ${xmr_binary_dir}/
+rmdir ${xmr_binary_dir}/monero-*/
 chmod +x ${xmr_binary_dir}/monero*
 
 
