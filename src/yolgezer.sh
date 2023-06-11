@@ -58,7 +58,9 @@ chmod +x ${xmr_binary_dir}/monero*
 
 
 # check if a microsd card exists
-[ -d ${HOME}/storage/external-1 ] && xmr_bc_dir="${HOME}/storage/external-1/bitmonero" || xmr_bc_dir="${HOME}/.bitmonero" 
+[ -d ${HOME}/storage/external-1 ] && ( termux-setup-storage && xmr_bc_dir="${HOME}/storage/external-1/bitmonero" ) || xmr_bc_dir="${HOME}/.bitmonero" 
+# TODO: check the available storage space before starting the monerod
+mkdir ${xmr_bc_dir}
 
 # create the config file for the monero daemon
 #
@@ -110,3 +112,10 @@ limit-rate-down=1048576   # 1048576 kB/s == 1GB/s; a raise from default 8192 kB/
 EOF
 
 # run it and sync the blockchain
+# create runit scripts
+
+
+
+# TODO: later we should create a runit service for running the monerod
+#
+# TODO: also add run conditions using termux-api for battery, and network state (wifi vs data)
