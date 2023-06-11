@@ -50,13 +50,63 @@ mkdir -p ${xmr_binary_dir}
 sed -i 's/^socks4.*127.0.0.1 9050$/socks5 127.0.0.1 9055/' ${PREFIX}/etc/proxychains.conf
 proxychains4 -q wget -q --show-progress -O "${xmr_binary_dir}/android_monero_binaries" "${xmr_dl_onion}"
 
+# extract and move the binaries
 7z x "${xmr_binary_dir}/android_monero_binaries" -so | 7z x -aoa -si -ttar -o"${xmr_binary_dir}"
 mv ${xmr_binary_dir}/monero-*/* ${xmr_binary_dir}/
 rmdir ${xmr_binary_dir}/monero-*/
 chmod +x ${xmr_binary_dir}/monero*
 
 
+# check if a microsd card exists
+[ -d ${HOME}/storage/external-1 ] && xmr_bc_dir="${HOME}/storage/external-1/bitmonero" || xmr_bc_dir="${HOME}/.bitmonero" 
+
 # create the config file for the monero daemon
 #
+mkdir ${xmr_config_dir}
+cat << EOF > ${xmr_config_dir}/monerod.conf
+# Data directory (blockchain db and indices)
+data-dir=${xmr_bc_dir}
+
+# Log file
+log-file=/dev/null
+max-log-file-size=0           # Prevent monerod from creating log files
+
+# block-sync-size=50
+prune-blockchain=1            # 1 to prune
+
+# P2P (seeding) binds
+p2p-bind-ip=0.0.0.0           # Bind to all interfaces. Default is local 127.0.0.1
+p2p-bind-port=18080           # Bind to default port
+
+# Restricted RPC binds (allow restricted access)
+# Uncomment below for access to the node from LAN/WAN. May require port forwarding for WAN access
+rpc-restricted-bind-ip=0.0.0.0
+rpc-restricted-bind-port=18089
+
+# Unrestricted RPC binds
+rpc-bind-ip=127.0.0.1         # Bind to local interface. Default = 127.0.0.1
+rpc-bind-port=18081           # Default = 18081
+#confirm-external-bind=1      # Open node (confirm). Required if binding outside of localhost
+#restricted-rpc=1             # Prevent unsafe RPC calls.
+
+# Services
+rpc-ssl=autodetect
+no-zmq=1
+no-igd=1                            # Disable UPnP port mapping
+db-sync-mode=fast:async:1000000     # Switch to db-sync-mode=safe for slow but more reliable db writes
+
+# Emergency checkpoints set by MoneroPulse operators will be enforced to workaround potential consensus bugs
+# Check https://monerodocs.org/infrastructure/monero-pulse/ for explanation and trade-offs
+#enforce-dns-checkpointing=1
+disable-dns-checkpoints=1
+enable-dns-blocklist=1
+
+
+# Connection Limits
+out-peers=32              # This will enable much faster sync and tx awareness; the default 8 is suboptimal nowadays
+in-peers=32               # The default is unlimited; we prefer to put a cap on this
+limit-rate-up=1048576     # 1048576 kB/s == 1GB/s; a raise from default 2048 kB/s; contribute more to p2p network
+limit-rate-down=1048576   # 1048576 kB/s == 1GB/s; a raise from default 8192 kB/s; allow for faster initial sync
+EOF
 
 # run it and sync the blockchain
