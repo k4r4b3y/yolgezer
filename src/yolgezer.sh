@@ -8,6 +8,7 @@ set -xeuo pipefail
 # define directory locations
 xmr_binary_dir="${HOME}/.local/bin/monero"
 xmr_config_dir="${HOME}/.config/monero"
+xmr_runit_dir="${HOME}/.config/sv/xmrd"
 xmr_bc_dir="${HOME}/storage/external-1/bitmonero"
 
 # define resource URLs
@@ -60,11 +61,11 @@ chmod +x ${xmr_binary_dir}/monero*
 # check if a microsd card exists
 [ -d ${HOME}/storage/external-1 ] && ( termux-setup-storage && xmr_bc_dir="${HOME}/storage/external-1/bitmonero" ) || xmr_bc_dir="${HOME}/.bitmonero" 
 # TODO: check the available storage space before starting the monerod
-mkdir ${xmr_bc_dir}
+mkdir -p ${xmr_bc_dir}
 
 # create the config file for the monero daemon
 #
-mkdir ${xmr_config_dir}
+mkdir -p ${xmr_config_dir}
 cat << EOF > ${xmr_config_dir}/monerod.conf
 # Data directory (blockchain db and indices)
 data-dir=${xmr_bc_dir}
@@ -113,8 +114,22 @@ EOF
 
 # run it and sync the blockchain
 # create runit scripts
+mkdir -p ${xmr_runit_dir}
+cat << EOF > ${xmr_runit_dir}/run
+#!/bin/sh
+exec 2>&1
+exec ${xmr_binary_dir}/monerod --non-interactive --config-file ${xmr_config_dir}/monerod.conf
+EOF
 
+mkdir -p ${xmr_runit_dir}/log
+cat << EOF > ${xmr_runit_dir}/log/run
+#!/data/data/com.termux/files/usr/bin/sh
+svlogger="/data/data/com.termux/files/usr/share/termux-services/svlogger"
+exec "\${svlogger}" "\$@"
+EOF
 
+# create symlink to the $SVDIR
+ln -s ${xmr_runit_dir} ${SVDIR}/
 
 # TODO: later we should create a runit service for running the monerod
 #
