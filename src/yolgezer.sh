@@ -11,6 +11,8 @@ xmr_config_dir="${HOME}/.config/monero"
 xmr_runit_dir="${HOME}/.config/sv/xmrd"
 xmr_bc_dir="${HOME}/storage/external-1/bitmonero"
 
+# ? TODO: add ${xmr_binary_dir} to the ${PATH}
+
 # define resource URLs
 xmr_dl_onion_64bit="http://dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/androidarm8"
 #xmr_dl_onion_32bit="http://dlmonerotqz47bjuthtko2k7ik2ths4w2rmboddyxw4tz4adebsmijid.onion/cli/androidarm7"
@@ -40,7 +42,7 @@ esac
 case $(uname -m) in
 	#arm | armv7l | armv8l ) MONERO_CLI_URL="https://downloads.getmonero.org/cli/androidarm7" ;;
 	aarch64_be | aarch64 | armv8b ) xmr_dl_onion="${xmr_dl_onion_64bit}" ;;
-	*) termux-toast -g bottom "Your device is not compatible- ARMv8"; exit 1 ;;
+	*) termux-toast -g bottom "Your device is not compatible- ARMv8 required"; exit 1 ;;
 esac
 
 # pull the monero binaries
@@ -116,7 +118,7 @@ EOF
 # create runit scripts
 mkdir -p ${xmr_runit_dir}
 cat << EOF > ${xmr_runit_dir}/run
-#!/bin/sh
+#!/data/data/com.termux/files/usr/bin/sh
 exec 2>&1
 exec ${xmr_binary_dir}/monerod --non-interactive --config-file ${xmr_config_dir}/monerod.conf
 EOF
@@ -128,10 +130,12 @@ svlogger="/data/data/com.termux/files/usr/share/termux-services/svlogger"
 exec "\${svlogger}" "\$@"
 EOF
 
+# give executable permission
+chmod +x ${xmr_runit_dir}/run
+chmod +x ${xmr_runit_dir}/log/run
+
 # create symlink to the $SVDIR
 ln -sf ${xmr_runit_dir} ${SVDIR}/
 sv-enable $(basename ${xmr_runit_dir})
 
-# TODO: later we should create a runit service for running the monerod
-#
 # TODO: also add run conditions using termux-api for battery, and network state (wifi vs data)
