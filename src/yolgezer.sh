@@ -139,3 +139,10 @@ ln -sf ${xmr_runit_dir} ${SVDIR}/
 sv-enable $(basename ${xmr_runit_dir})
 
 # TODO: also add run conditions using termux-api for battery, and network state (wifi vs data)
+#
+# TODO: 1) create a tor hidden service for monerod 
+#       2) add the --proxy and --tx-proxy directives to the monerod.conf file
+#          MAKE SURE TO PASS THE CORRECT TOR PORT: 9055 !
+#       3) add the anonymous-inbound directive to the monerod.conf file
+#          also, read and understand properly how these directives work
+#       4) 
