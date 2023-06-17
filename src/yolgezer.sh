@@ -166,7 +166,7 @@ limit-rate-down=1048576       # 1048576 kB/s == 1GB/s; a raise from default 8192
 # --- TOR ---
 tx-proxy=tor,127.0.0.1:9055,16,disable_noise   # we set port 9055 to prevent orbot conflicts
 anonymous-inbound=${xmr_hidden_address}:18083,127.0.0.1:18083,16
-proxy=tor,127.0.0.1:9055
+proxy=127.0.0.1:9055
 pad-transactions=1
 EOF
 
