@@ -59,10 +59,11 @@ EOF
 mkdir -p /data/data/com.termux/files/usr/var/lib/tor/xmrd/
 # Start tor as a termux-service
 case $(cat ${PREFIX}/var/service/tor/supervise/stat) in
-	run ) echo "Tor is already running." && sv restart tor ;;
+	run ) echo "Tor is already running." && sv restart tor && sleep 7 ;;
 	*) echo "Enabling tor daemon." && sv-enable tor && sleep 7 ;;
 esac
-# TODO: put here the one-liner that defines ${xmr_hidden_address}
+# get the hidden service address
+xmr_hidden_address=$(cat ${PREFIX}/var/lib/tor/xmrd/hostname)
 
 
 ##################################
