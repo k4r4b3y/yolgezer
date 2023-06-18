@@ -102,8 +102,7 @@ exec "\${svlogger}" "\$@"
 EOF
 
 # give executable permission
-chmod +x ${xmr_runit_dir}/run
-chmod +x ${xmr_runit_dir}/log/run
+chmod +x ${xmr_runit_dir}/run ${xmr_runit_dir}/log/run
 
 # create symlink to the $SVDIR
 ln -sf ${xmr_runit_dir} ${SVDIR}/
