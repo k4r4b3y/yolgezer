@@ -56,14 +56,14 @@ HiddenServiceDir /data/data/com.termux/files/usr/var/lib/tor/xmrd/
 HiddenServicePort 18089 127.0.0.1:18089    # For wallets connecting over RPC
 HiddenServicePort 18083 127.0.0.1:18083    # For other nodes
 EOF
-mkdir -p /data/data/com.termux/files/usr/var/lib/tor/xmrd/
+mkdir -p ${PREFIX}/var/lib/tor/xmrd
 # Start tor as a termux-service
 case $(cat ${PREFIX}/var/service/tor/supervise/stat) in
 	run ) echo "Tor is already running." && sv restart tor && sleep 7 ;;
 	*) echo "Enabling tor daemon." && sv-enable tor && sleep 7 ;;
 esac
 # get the hidden service address
-xmr_hidden_address=$(cat ${PREFIX}/var/lib/tor/xmrd/hostname)
+xmr_hidden_address="$(cat ${PREFIX}/var/lib/tor/xmrd/hostname)"
 
 
 ##################################
@@ -136,17 +136,17 @@ db-sync-mode=fast:async:25000000    # Switch to db-sync-mode=safe for slow but m
 max-concurrency=2		                # Max threads. Avoid overheating (default 4)
 
 # --- NETWORK ---
-no-zmq=1                     # unnecessary for now
-no-igd=1                     # Disable UPnP port mapping
-public-node=1                # reachable by anyone who knows the tor hidden service address
-confirm-external-bind=1      # Open node (confirm). Required if binding outside of localhost
-restricted-rpc=1             # Prevent unsafe RPC calls.
-rpc-ssl=disabled             # we'll keep the node accessible over tor which itself is encrypted
-disable-rpc-ban=1            # Be more generous to wallets connecting
+no-zmq=1                            # unnecessary for now
+no-igd=1                            # Disable UPnP port mapping
+public-node=1                       # reachable by anyone who knows the tor hidden service address
+confirm-external-bind=1             # Open node (confirm). Required if binding outside of localhost
+restricted-rpc=1                    # Prevent unsafe RPC calls.
+rpc-ssl=disabled                    # we'll keep the node accessible over tor which itself is encrypted
+disable-rpc-ban=1                   # Be more generous to wallets connecting
 # P2P (seeding) binds
 # for the p2p comms
-p2p-bind-ip=0.0.0.0           # Bind to all interfaces. Default is local 127.0.0.1
-p2p-bind-port=18080           # Bind to default port
+p2p-bind-ip=0.0.0.0                 # Bind to all interfaces. Default is local 127.0.0.1
+p2p-bind-port=18080                 # Bind to default port
 # Restricted RPC binds (allow restricted access)
 # for external wallets connecting to us over tor network
 # we will forward the incoming tor hidden service connections
@@ -155,19 +155,20 @@ rpc-restricted-bind-ip=0.0.0.0
 rpc-restricted-bind-port=18089
 # Unrestricted RPC binds
 # for local RPC calls from the termux itself
-rpc-bind-ip=127.0.0.1         # Bind to local interface. Default = 127.0.0.1
-rpc-bind-port=18081           # Default = 18081
+rpc-bind-ip=127.0.0.1               # Bind to local interface. Default = 127.0.0.1
+rpc-bind-port=18081                 # Default = 18081
 # Connection Limits
-out-peers=32                  # This will enable much faster sync and tx awareness; the default 8 is suboptimal nowadays
-in-peers=32                   # The default is unlimited; we prefer to put a cap on this
-limit-rate-up=1048576         # 1048576 kB/s == 1GB/s; a raise from default 2048 kB/s; contribute more to p2p network
-limit-rate-down=1048576       # 1048576 kB/s == 1GB/s; a raise from default 8192 kB/s; allow for faster initial sync
+out-peers=32                        # This will enable much faster sync and tx awareness
+in-peers=32                         # The default is unlimited; we prefer to put a cap on this
+limit-rate-up=1048576               # 1048576 kB/s == 1GB/s; a raise from default 2048 kB/s;
+limit-rate-down=1048576             # 1048576 kB/s == 1GB/s; a raise from default 8192 kB/s;
 
 # --- TOR ---
-tx-proxy=tor,127.0.0.1:9055,16,disable_noise   # we set port 9055 to prevent orbot conflicts
-anonymous-inbound=${xmr_hidden_address}:18083,127.0.0.1:18083,16
+# we set tor port to 9055 to prevent orbot conflicts
 proxy=127.0.0.1:9055
 pad-transactions=1
+tx-proxy=tor,127.0.0.1:9055,16,disable_noise
+anonymous-inbound=${xmr_hidden_address}:18083,127.0.0.1:18083,16
 EOF
 
 
