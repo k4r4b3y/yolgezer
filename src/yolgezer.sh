@@ -140,18 +140,18 @@ no-zmq=1                            # unnecessary for now
 no-igd=1                            # Disable UPnP port mapping
 public-node=1                       # reachable by anyone who knows the tor hidden service address
 confirm-external-bind=1             # Open node (confirm). Required if binding outside of localhost
-restricted-rpc=1                    # Prevent unsafe RPC calls.
+#restricted-rpc=1                    # Prevent unsafe RPC calls.
 rpc-ssl=disabled                    # we'll keep the node accessible over tor which itself is encrypted
 disable-rpc-ban=1                   # Be more generous to wallets connecting
 # P2P (seeding) binds
 # for the p2p comms
-p2p-bind-ip=0.0.0.0                 # Bind to all interfaces. Default is local 127.0.0.1
+p2p-bind-ip=127.0.0.1                 # Bind to all interfaces. Default is local 127.0.0.1
 p2p-bind-port=18080                 # Bind to default port
 # Restricted RPC binds (allow restricted access)
 # for external wallets connecting to us over tor network
 # we will forward the incoming tor hidden service connections
 # to this port on the machine
-rpc-restricted-bind-ip=0.0.0.0
+rpc-restricted-bind-ip=127.0.0.1
 rpc-restricted-bind-port=18089
 # Unrestricted RPC binds
 # for local RPC calls from the termux itself
