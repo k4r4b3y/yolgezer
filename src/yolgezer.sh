@@ -131,8 +131,7 @@ prune-blockchain=1                  # 1 to prune
 sync-pruned-blocks=1                # only download the pruned blocks
 disable-dns-checkpoints=1
 enable-dns-blocklist=1
-db-sync-mode=fast:async:25000000    # Switch to db-sync-mode=safe for slow but more reliable db writes
-# also try "fastest:async:1000000" to see if it speeds up
+db-sync-mode=fastest:async:25000000 # Switch to db-sync-mode=safe for slow but more reliable db writes
 max-concurrency=2		                # Max threads. Avoid overheating (default 4)
 
 # --- NETWORK ---
@@ -140,7 +139,6 @@ no-zmq=1                            # unnecessary for now
 no-igd=1                            # Disable UPnP port mapping
 public-node=1                       # reachable by anyone who knows the tor hidden service address
 confirm-external-bind=1             # Open node (confirm). Required if binding outside of localhost
-#restricted-rpc=1                    # Prevent unsafe RPC calls.
 rpc-ssl=disabled                    # we'll keep the node accessible over tor which itself is encrypted
 disable-rpc-ban=1                   # Be more generous to wallets connecting
 # P2P (seeding) binds
